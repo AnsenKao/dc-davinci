@@ -6,8 +6,6 @@ from discord.ext import commands
 from config import DISCORD_TOKEN
 from model import get_model_response
 
-# 設置日誌級別為 DEBUG
-logging.basicConfig(level=logging.DEBUG)
 
 # 設定機器人的意圖
 intents = discord.Intents.default()
