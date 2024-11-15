@@ -1,6 +1,5 @@
 # model/model.py
 
-import asyncio
 import json
 import httpx
 from openai import AsyncOpenAI
