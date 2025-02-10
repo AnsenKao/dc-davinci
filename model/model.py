@@ -5,9 +5,12 @@ import httpx
 from openai import AsyncOpenAI
 from config import ASSISTANT_API, API_KEY, ASSISTANT_ID
 
+
 async def get_model_response(user_prompt):
     http_client = httpx.AsyncClient(verify=False)
-    client = AsyncOpenAI(base_url=ASSISTANT_API, api_key=API_KEY, http_client=http_client)
+    client = AsyncOpenAI(
+        base_url=ASSISTANT_API, api_key=API_KEY, http_client=http_client
+    )
 
     thread = await client.beta.threads.create()
 
@@ -35,13 +38,21 @@ async def get_model_response(user_prompt):
             requires_action_run_id = event.data.id
 
     if requires_action_run_id != "":
-        run = await client.beta.threads.runs.retrieve(requires_action_run_id, thread_id=thread.id)
+        run = await client.beta.threads.runs.retrieve(
+            requires_action_run_id, thread_id=thread.id
+        )
         outputs = []
         for call in run.required_action.submit_tool_outputs.tool_calls:
-            print(f"call plugin {call.function.name} with args: {call.function.arguments}")
+            print(
+                f"call plugin {call.function.name} with args: {call.function.arguments}"
+            )
             resp = await client._client.post(
                 ASSISTANT_API + "/pluginapi",
-                params={"tid": thread.id, "aid": ASSISTANT_ID, "pid": call.function.name},
+                params={
+                    "tid": thread.id,
+                    "aid": ASSISTANT_ID,
+                    "pid": call.function.name,
+                },
                 headers={"Authorization": "Bearer " + API_KEY},
                 json=json.loads(call.function.arguments),
                 timeout=30,

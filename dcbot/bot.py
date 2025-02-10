@@ -12,23 +12,26 @@ intents = discord.Intents.default()
 intents.message_content = True  # 確保機器人能夠讀取消息內容
 
 # 設定機器人的指令前綴和 @ 機器人時的回應
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('!'), intents=intents)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), intents=intents)
+
 
 # 當機器人成功啟動時，會觸發這個事件
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name} ({bot.user.id})')
-    print('------')
+    print(f"Logged in as {bot.user.name} ({bot.user.id})")
+    print("------")
+
 
 # 下載圖片並轉換為 base64 編碼
 async def download_and_encode_image(url):
     response = requests.get(url)
     if response.status_code == 200:
         # 將圖片內容轉換為 base64
-        encoded_image = base64.b64encode(response.content).decode('utf-8')
+        encoded_image = base64.b64encode(response.content).decode("utf-8")
         return encoded_image
     else:
         raise Exception(f"Failed to download image: {response.status_code}")
+
 
 # 定義一個指令，當用戶輸入 !ask 時，機器人會將用戶的問題或圖片傳送給語言模型並回應
 @bot.command()
@@ -38,7 +41,7 @@ async def ask(ctx, *, question: str = None):
     if ctx.message.attachments:
         for attachment in ctx.message.attachments:
             # 檢查附件是否為圖片
-            if attachment.content_type.startswith('image/'):
+            if attachment.content_type.startswith("image/"):
                 print(f"Image URL: {attachment.url}")
                 encoded_image = await download_and_encode_image(attachment.url)
                 print(f"Encoded image: {encoded_image}")
@@ -53,6 +56,7 @@ async def ask(ctx, *, question: str = None):
         await ctx.send(response)
     else:
         await ctx.send("Please provide a question or an image.")
+
 
 # 監聽訊息事件
 @bot.event
@@ -69,7 +73,7 @@ async def on_message(message):
         if message.attachments:
             for attachment in message.attachments:
                 # 檢查附件是否為圖片
-                if attachment.content_type.startswith('image/'):
+                if attachment.content_type.startswith("image/"):
                     print(f"Image URL: {attachment.url}")
                     encoded_image = await download_and_encode_image(attachment.url)
                     print(f"Encoded image: {encoded_image}")
@@ -89,12 +93,12 @@ async def on_message(message):
         if bot.user.mentioned_in(message):
             encoded_images = []
             # 移除提及機器人的部分，保留問題內容
-            question = message.content.replace(f'<@!{bot.user.id}>', '').strip()
+            question = message.content.replace(f"<@!{bot.user.id}>", "").strip()
 
             if message.attachments:
                 for attachment in message.attachments:
                     # 檢查附件是否為圖片
-                    if attachment.content_type.startswith('image/'):
+                    if attachment.content_type.startswith("image/"):
                         print(f"Image URL: {attachment.url}")
                         encoded_image = await download_and_encode_image(attachment.url)
                         print(f"Encoded image: {encoded_image}")
@@ -112,6 +116,7 @@ async def on_message(message):
 
     # 確保其他命令仍然可以正常運行
     await bot.process_commands(message)
+
 
 def run_bot():
     print("Starting bot...")
