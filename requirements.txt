@@ -2,3 +2,5 @@ discord.py==2.4.0
 httpx==0.27.2
 openai==1.54.4
 python-dotenv==1.0.1
+selenium==4.17.2
+webdriver-manager==4.0.1

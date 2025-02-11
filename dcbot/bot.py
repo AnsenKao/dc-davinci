@@ -2,7 +2,7 @@
 
 import discord
 from discord.ext import commands
-from config import DISCORD_TOKEN
+from config import Settings
 from model import get_model_response
 import requests
 import base64
@@ -14,6 +14,8 @@ intents.message_content = True  # 確保機器人能夠讀取消息內容
 # 設定機器人的指令前綴和 @ 機器人時的回應
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), intents=intents)
 
+# initial settings
+settings = Settings()
 
 # 當機器人成功啟動時，會觸發這個事件
 @bot.event
@@ -120,4 +122,4 @@ async def on_message(message):
 
 def run_bot():
     print("Starting bot...")
-    bot.run(DISCORD_TOKEN)
+    bot.run(settings.discord_token)

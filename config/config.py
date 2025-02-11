@@ -2,18 +2,41 @@
 
 from dotenv import load_dotenv
 import os
+from typing import Optional
 
-# 加載 .env 文件中的環境變量
-load_dotenv()
-
-ASSISTANT_API = os.getenv("ASSISTANT_API")
-API_KEY = os.getenv("API_KEY")
-ASSISTANT_ID = os.getenv("ASSISTANT_ID")
-DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-
-
-# 確保所有變量都已加載
-if not all([ASSISTANT_API, API_KEY, ASSISTANT_ID, DISCORD_TOKEN]):
-    raise ValueError(
-        "Some environment variables are missing. Please check your .env file."
-    )
+class Settings:
+    def __init__(self):
+        # 加載 .env 文件中的環境變量
+        load_dotenv()
+        
+        # 初始化設定值
+        self.assistant_api: str = self._get_env("ASSISTANT_API")
+        self.api_key: str = self._get_env("API_KEY")
+        self.assistant_id: str = self._get_env("ASSISTANT_ID")
+        self.discord_token: str = self._get_env("DISCORD_TOKEN")
+        
+        # 驗證所有必要的設定都已加載
+        self._validate_settings()
+    
+    def _get_env(self, key: str) -> str:
+        """從環境變量獲取設定值"""
+        value = os.getenv(key)
+        return value if value is not None else ""
+    
+    def _validate_settings(self) -> None:
+        """驗證所有必要的設定是否存在"""
+        missing_vars = []
+        
+        if not self.assistant_api:
+            missing_vars.append("ASSISTANT_API")
+        if not self.api_key:
+            missing_vars.append("API_KEY")
+        if not self.assistant_id:
+            missing_vars.append("ASSISTANT_ID")
+        if not self.discord_token:
+            missing_vars.append("DISCORD_TOKEN")
+            
+        if missing_vars:
+            raise ValueError(
+                f"Missing environment variables: {', '.join(missing_vars)}. Please check your .env file."
+            )
