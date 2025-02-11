@@ -11,6 +11,7 @@ ASSISTANT_API = settings.assistant_api
 API_KEY = settings.api_key
 ASSISTANT_ID = settings.assistant_id
 
+
 async def get_model_response(user_prompt):
     http_client = httpx.AsyncClient(verify=False)
     client = AsyncOpenAI(

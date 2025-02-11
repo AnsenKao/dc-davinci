@@ -17,6 +17,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), intents=inten
 # initial settings
 settings = Settings()
 
+
 # 當機器人成功啟動時，會觸發這個事件
 @bot.event
 async def on_ready():
